@@ -1,0 +1,43 @@
+#!/bin/bash
+
+echo "HELLO!"
+if [[ "$#" -eq 2 ]]
+then {
+	echo "I am about to create a directory structure named $1."
+	echo "Do you want me to continue? [Yes/no]"
+	read R
+	if [[ "$R" = "Yes" ]]
+	then {
+	echo "Create directory structure..."
+	mkdir "$1"
+	cd "$1"
+	mkdir -p bin cmd/api internals migrations remote
+
+	echo '//File: cmd/api/main.go
+
+	package main
+
+	import "fmt"
+
+	func main() {
+	fmt.Println("Hello world")
+	}' > cmd/api/main.go
+
+	echo "$1.$2" > go.mod
+	touch Makefile
+	echo "I have created a *main.go* file for you to test the directory structure."
+	echo "Type *go run ./cmd/api* at the root directory of your project to test your project."
+	echo "Thank you."
+	}
+	elif [[ "$R" = "no" ]]
+	then
+		echo "Abort."
+	else 
+		echo "Invalid response."
+	fi
+}
+else {
+	echo "You need to provide two arguments for this script to work."
+	echo "Usage: make-go-file <root directory name> <identifier name>"
+}
+fi
